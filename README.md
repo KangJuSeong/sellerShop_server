@@ -18,7 +18,7 @@
 ### 4. 모델 설계
 * Django 에서 제공되는 SQLite3 를 이용
 * ERD 다이어그램   
-![](D:\sellerShop_server\img\erd.png)
+![](https://github.com/KangJuSeong/sellerShop_server/blob/main/img/erd.png)
   
 > 테이블별 상세 내용    
 > 1. User
