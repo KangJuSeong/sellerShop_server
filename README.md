@@ -43,33 +43,27 @@
 
 ### 5. 필요한 모듈 개발
 * `APIView` 클래스는`JsonResponse`를 리턴해주는 클래스 메서드이며 HTTP 통신으로 `Request` 에 대한 `Response` 를 반환해주는 방식.
-* `AuthAPIView` 클래스는 `Request` 가 도착했을 때 `HEADER` 에 존재하는 토큰값이 유효한지 체크 후 결과를 `Response` 해주는 클래스 메서드.
-* 이러한 클래스 메서드 방식을 이용하면 `Response`를 보낼 때 데이터와 메시지를 넣고 200 또는 400을 선택해서 보내는데 편리함.
-```python
-# utils/view.py
-from django.http import JsonResponse
-from django.views import View
-from django.contrib.auth import get_user_model
-from utils.functions import decode_jwt
-
-User = get_user_model()
-
-class APIView(View):
+    ```python
+    class APIView(View):
     @classmethod
     def raw_response(cls, content: dict, status: int = 200) -> JsonResponse:
         return JsonResponse(content, status=status)
-
+    
     def response(self, data, message, status):
         return self.raw_response({'data': data, 'message': message, 'status': status}, status)
+    
     # 200 응답을 리턴해주는 함수
     def success(self, data=None, message='') -> JsonResponse:
         return self.response(data, message, 200)
+    
     # 400 응답을 리턴해주는 함수
     def fail(self, data=None, message='', status: int = 400) -> JsonResponse:
         return self.response(data, message, status)
-
-
-class AuthAPIView(APIView):
+    ```
+* `AuthAPIView` 클래스는 `Request` 가 도착했을 때 `HEADER` 에 존재하는 토큰값이 유효한지 체크 후 결과를 `Response` 해주는 클래스 메서드.
+* 이러한 클래스 메서드 방식을 이용하면 `Response`를 보낼 때 데이터와 메시지를 넣고 200 또는 400을 선택해서 보내는데 편리함.
+    ```python
+    class AuthAPIView(APIView):
     def dispatch(self, request, *args, **kwargs):
         # 헤더에 담긴 토큰 값 읽어오기
         token = request.META.get('HTTP_AUTHORIZATION', '')
@@ -82,27 +76,28 @@ class AuthAPIView(APIView):
                 return self.fail('Invalid Auth')
         else:
             return self.fail('Invalid Auth')
-        return super(AuthAPIView, self).dispatch(request, *args, **kwargs)
-```
-
+    
+        return super(AuthAPIView, self).dispatch(request, *args, **kwargs)  
+    ```
+  
 * 계정을 인코딩하여 토큰을 만들거나 토큰을 디코딩하는 함수.
-```python
-utils/function.py
-import jwt
-from django.contrib.auth.models import User
-from jwt import InvalidSignatureError
-
-# JWT_KEY 는 환경 변수
-def make_jwt(user: User):
-    return jwt.encode({'id': user.id}, JWT_KEY, algorithm='HS256')
-
-def decode_jwt(token: str):
-    try:
-        return jwt.decode(token.encode(), JWT_KEY, algorithms='HS256')
-    except InvalidSignatureError:
-        pass
-    return ''
-```
+    ```python
+    utils/function.py
+    import jwt
+    from django.contrib.auth.models import User
+    from jwt import InvalidSignatureError
+    
+    # JWT_KEY 는 환경 변수
+    def make_jwt(user: User):
+        return jwt.encode({'id': user.id}, JWT_KEY, algorithm='HS256')
+    
+    def decode_jwt(token: str):
+        try:
+            return jwt.decode(token.encode(), JWT_KEY, algorithms='HS256')
+        except InvalidSignatureError:
+            pass
+        return ''
+    ```
 
 * 계정 ID, PW, 전화번호 검사 함수 작성.
 ```python
