@@ -20,7 +20,7 @@
 
 ### 4. 모델 설계 및 작성
 * ERD 다이어그램   
-![](https://github.com/KangJuSeong/sellerShop_server/blob/main/img/erd.png)
+![](https://github.com/KangJuSeong/sellerShop_server/blob/main/erd.png)
   
 > 테이블별 상세 내용    
 > 1. User
