@@ -165,14 +165,3 @@
 `get_today_order_number()` [Code](https://github.com/KangJuSeong/sellerShop_server/blob/d72ca6ff97aba40c2667bc6a61ff165e96a02b58/shoppingmall_back/crawler/naver.py#L55-L61)
 * `get_today_order()` 함수를 통해 받은 주문 정보중 '배송중' 상태인 것은 shipped 를 1씩 증가시키고 전체 개수를 통해 total 값을 증가.
 * shipped 와 total 값 리턴.
-
-## 8. 개발 후
-   
-
-
-
-
-
-
-
-
