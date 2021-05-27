@@ -108,7 +108,7 @@
 * 해당 shop 과 count(인덱스) 를 통해 유저의 쇼핑몰계정 정보 불러오기.
 * count 가 필요한 이유는 같은 쇼핑몰 계정이 여러개일 수 있기 때문에 필요함.
 * `importlib.import_module()` 구문을 통해 해당 shop 과 일치하는 크롤러 모듈을 불러오기.
-* 해당 크롤러 모듈에 있는 `get_today_order_number()` 함수를 통해 전체 주문 개수와 배송 완료 된 것의 개수를 response 해줌.
+* 해당 크롤러 모듈에 있는 `get_today_order_number()` 함수를 통해 전체 주문 개수와 배송 중인 주문의 개수를 response 해줌.
 
 `AccountShopListView` [Code](https://github.com/KangJuSeong/sellerShop_server/blob/0cc691ae359f7f96e16b0b3d9db29c3d49044ba3/shoppingmall_back/apis/v1/views.py#L50-L61)
 * 등록되어 있는 쇼핑몰 계정들을 모두 가져와서 response.
@@ -127,11 +127,44 @@
 
 ## 7. 쇼핑몰 별 크롤러 작성
 * 쇼핑몰 별로 크롤러 모듈을 작성.
-* `get_today_order_number()` 함수를 작성하여 금일 배송 및 주문 개수를 가져오기.
+* `get_today_order_number()` 함수를 작성하여 금일 배송 중 및 주문 개수를 가져오기.
 * `is_valid_account()` 함수를 작성하여 유효한 계정인지 확인.
 * 크롤러 별로 session 값을 가져와서 리턴해주는 함수 작성.
 
 ### 1. coupang.py
+`is_valid_account()` [Code](https://github.com/KangJuSeong/sellerShop_server/blob/d72ca6ff97aba40c2667bc6a61ff165e96a02b58/shoppingmall_back/crawler/coupang.py#L71-L74)
+* `get_pdt()` 함수를 이용하여 리턴받은 값이 유효한 세션 값인지 확인 후 유효하다면 True 리턴.
+
+`get_pdt()` [Code](https://github.com/KangJuSeong/sellerShop_server/blob/d72ca6ff97aba40c2667bc6a61ff165e96a02b58/shoppingmall_back/crawler/coupang.py#L65-L68)
+* payload 에 _id, _pw 를 삽입.
+* 해당 payload 와 로그인 url 을 `requests.post()` 메서드의 매개변수로 넣고 요청 후 돌아오는 응답의 쿠기 값에서 'pdt-boecn' 키의 값이 세션이므로 리턴.
+
+`get_today_order_number()` [Code](https://github.com/KangJuSeong/sellerShop_server/blob/d72ca6ff97aba40c2667bc6a61ff165e96a02b58/shoppingmall_back/crawler/coupang.py#L6-L62)
+* 금일 주문량과 배송 중인 수량을 가져오는 함수.
+* 처음에 기존에 세션값이 없다면 `get_pdt()` 함수를 통해 세션값 가져와서 저장.
+* 세션값을 헤더에 있는 쿠기값에 삽입, payload 에는 금일 날짜와 크롤링 해올 페이지를 입력 후 5번의 요청 실패가 일어나면 종료.
+* `requests.get()` 메서드에 헤더와 payload 를 매개변수로 입력 후 응답 요청.
+* 만약 세션값이 만료되었을 수 있으므로 요청 실패시 세션값을 한번 더 가져온 후 요청.
+* 응답으로 온 lxml 형식의 데이터를 bs4 모듈을 이용하여 읽어오기.
+* 가져온 값에서 배송 중인 주문의 갯수와 총 주문 개수를 저장하고 페이지가 더 존재한다면 다음 페이지로 가서 위 과정을 반복하고 최종적으로 shipped 와 total 값 리턴.
+
+### 2. naver.py
+`is_valid_account()` [Code](https://github.com/KangJuSeong/sellerShop_server/blob/d72ca6ff97aba40c2667bc6a61ff165e96a02b58/shoppingmall_back/crawler/naver.py#L87-L90)
+* 'get_nsi()' 함수를 이용하여 리턴받은 값이 유효한 세션 값인지 확인 후 유효하다면 True 리턴.
+
+`get_nsi()` [Code](https://github.com/KangJuSeong/sellerShop_server/blob/d72ca6ff97aba40c2667bc6a61ff165e96a02b58/shoppingmall_back/crawler/naver.py#L64-L84)
+* payload 에 _id, _pw 를 넣고, 헤더 작성 후 `requests.post()` 메서드의 매개변수에 payload 와 헤더 삽입.
+* 응답으로 온 리턴 값에서 쿠키값을 읽어 리턴.
+
+`get_today_order()` [Code](https://github.com/KangJuSeong/sellerShop_server/blob/d72ca6ff97aba40c2667bc6a61ff165e96a02b58/shoppingmall_back/crawler/naver.py#L7-L52)
+* 만약 세션값이 없다면 `get_nsi()` 함수를 이용하여 세션값을 가져오고 저장.
+* payload 에 금일 날짜와 페이지를 넣고 헤더를 작성하여 `requests.get()` 메서드의 매개변수에 삽입 후 요청.
+* 응답으로 온 데이터를 모으고 만약 해당 페이지의 총 주문 개수가 100개가 넘는다면 페이지를 증가시키고 100개가 안된다면 종료.
+* 여기서 응답으로 온 데이터들은 모두 주문 정보.
+
+`get_today_order_number()` [Code](https://github.com/KangJuSeong/sellerShop_server/blob/d72ca6ff97aba40c2667bc6a61ff165e96a02b58/shoppingmall_back/crawler/naver.py#L55-L61)
+* `get_today_order()` 함수를 통해 받은 주문 정보중 '배송중' 상태인 것은 shipped 를 1씩 증가시키고 전체 개수를 통해 total 값을 증가.
+* shipped 와 total 값 리턴.
 
 ## 8. 개발 후
    
