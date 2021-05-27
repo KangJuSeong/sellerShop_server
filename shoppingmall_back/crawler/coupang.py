@@ -26,14 +26,8 @@ def get_today_order_number(account_info):
             break
 
         payload = {
-            'coupangSrl': '',
-            'platformType': '',
             'from': date,
             'to': date,
-            'deliveryStatus': '',
-            'detailConditionKey': 'ORDER_ID',
-            'detailConditionValue': '',
-            'vendoritempackgeName': 'undefined',
             'page': page,
             'maxPage': page
         }

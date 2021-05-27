@@ -1,12 +1,12 @@
-## 쇼핑몰별 판매 현황 대쉬보드 (Intern)
+# 쇼핑몰별 판매 현황 대쉬보드 (Intern)
 
-### 1. 개발 목적
+## 1. 개발 목적
 * 많은 쇼핑몰에서 같은 판매자들이 동일한 물품을 판매하고 있고, 판매 현황 관리를 위해서 각각의 쇼핑몰을 번거롭게 로그인하고 확인해야 함.
 * 이러한 문제를 해결하기 위해 등록해놓은 쇼핑몰에 대한 판매 현황을 크롤링한 후 어플에서 한 눈에 확인 할 수 있도록 하여 효율적으로 판매 관리를 할 수 있음.
 
 <hr>
 
-### 2. 개발 스택 및 도구
+## 2. 개발 스택 및 도구
 `Python`
 `Django`
 `Selenium`
@@ -16,7 +16,7 @@
 
 <hr>
 
-### 3. 맡은 역할
+## 3. 맡은 역할
 * 쇼핑몰 별 판매 물품 현황 크롤링 모듈 만들기.
 * 유저, 쇼핑몰 유저, 리뷰, 구독, 공지사항 모델링.
 * 로그인, 회원가입, 리뷰, 구독, 공지사항 API 작성.
@@ -24,7 +24,7 @@
 
 <hr>
 
-### 4. 모델 설계 및 작성
+## 4. 모델 설계 및 작성
 * ERD 다이어그램 
 ![](https://github.com/KangJuSeong/sellerShop_server/blob/main/erd.png)
   
@@ -49,7 +49,7 @@
 
 <hr>
 
-### 5. 필요한 모듈 개발
+## 5. 필요한 모듈 개발
 
 `APIView` [Code](https://github.com/KangJuSeong/sellerShop_server/blob/337a439a87aea4579bf588a2d885e23c84ea45d0/shoppingmall_back/utils/views.py#L10-L24)
 * `APIView` 클래스는`JsonResponse`를 리턴해주는 클래스 메서드이며 HTTP 통신으로 `Request` 에 대한 `Response` 를 반환해주는 방식.   
@@ -66,7 +66,7 @@
 
 <hr>
 
-### 6. API 설계 및 작성
+## 6. API 설계 및 작성
 
 `AccountLoginView` [Code](https://github.com/KangJuSeong/sellerShop_server/blob/0cc691ae359f7f96e16b0b3d9db29c3d49044ba3/shoppingmall_back/apis/v1/views.py#L125-L139)   
 * 입력 받은 username 이 있는지 DB 에서 조회 후 존재한다면 해당 username 에 대한 password 가 일치하는지 확인.
@@ -137,16 +137,18 @@
 
 <hr>
 
-### 7. 쇼핑몰 별 크롤러 작성
+## 7. 쇼핑몰 별 크롤러 작성
+*
 
-###### 1. coupang.py
+### 1. coupang.py
+
 
 
 
 
 <hr>
 
-### 8. 개발 후
+## 8. 개발 후
    
 
 

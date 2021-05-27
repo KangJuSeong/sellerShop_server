@@ -77,6 +77,7 @@ def get_nsi(_id, _pw):
     }
 
     r = requests.post(url, json=payload, headers=headers)
+    print(r.status_code)
     try:
         return r.cookies.values()[0]
     except IndexError:
@@ -87,4 +88,4 @@ def get_nsi(_id, _pw):
 def is_valid_account(_id, _pw):
     if get_nsi(_id, _pw):
         return True
-    return True
+    return False
