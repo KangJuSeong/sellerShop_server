@@ -64,6 +64,8 @@
 `check_username, check_username, check_passowrd` [Code](https://github.com/KangJuSeong/sellerShop_server/blob/0cc691ae359f7f96e16b0b3d9db29c3d49044ba3/shoppingmall_back/utils/functions.py#L52-L81)  
 * 계정 ID, PW, 전화번호 검사 함수 작성.
 
+<hr>
+
 ### 6. API 설계 및 작성
 
 `AccountLoginView` [Code](https://github.com/KangJuSeong/sellerShop_server/blob/0cc691ae359f7f96e16b0b3d9db29c3d49044ba3/shoppingmall_back/apis/v1/views.py#L125-L139)   
