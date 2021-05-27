@@ -99,19 +99,28 @@
 * Response 에 데이터를 담기 전 리뷰 작성 날짜 포맷팅 변경 후 보내주기.
 
 `AccountByShopView` [Code](https://github.com/KangJuSeong/sellerShop_server/blob/0cc691ae359f7f96e16b0b3d9db29c3d49044ba3/shoppingmall_back/apis/v1/views.py#L21-L25)
-* 
+* 현재 등록되어 있는 쇼핑몰별 계정의 개수를 response 해줌.
+* `values('shop')` 구문을 이용하여 해당 계정에서 shop 필드의 값들만 가져오기.
+* 동일한 shop 값을 가진 계정의 개수를 `annotate(count=Count('shop'))` 구문을 통해 계산한 후 쿼리셋에 추가해주기.
 
 `DailyStatByAccountView` [Code](https://github.com/KangJuSeong/sellerShop_server/blob/0cc691ae359f7f96e16b0b3d9db29c3d49044ba3/shoppingmall_back/apis/v1/views.py#L28-L47)
-*
+* 파라미터로 shop 과 해당 shop 계정의 인덱스를 count 로 받기.
+* 해당 shop 과 count(인덱스) 를 통해 유저의 쇼핑몰계정 정보 불러오기.
+* count 가 필요한 이유는 같은 쇼핑몰 계정이 여러개일 수 있기 때문에 필요함.
+* `importlib.import_module()` 구문을 통해 해당 shop 과 일치하는 크롤러 모듈을 불러오기.
+* 해당 크롤러 모듈에 있는 `get_today_order_number()` 함수를 통해 전체 주문 개수와 배송 완료 된 것의 개수를 response 해줌.
 
 `AccountShopListView` [Code](https://github.com/KangJuSeong/sellerShop_server/blob/0cc691ae359f7f96e16b0b3d9db29c3d49044ba3/shoppingmall_back/apis/v1/views.py#L50-L61)
-*
+* 등록되어 있는 쇼핑몰 계정들을 모두 가져와서 response.
 
 `AccountShopDeleteView` [Code](https://github.com/KangJuSeong/sellerShop_server/blob/0cc691ae359f7f96e16b0b3d9db29c3d49044ba3/shoppingmall_back/apis/v1/views.py#L64-L76)
-*
+* Body 를 통해 id 값을 받으면 해당 id 값을 가진 쇼핑몰 계정 정보 삭제.
 
 `AccountShopCreateView` [Code](https://github.com/KangJuSeong/sellerShop_server/blob/0cc691ae359f7f96e16b0b3d9db29c3d49044ba3/shoppingmall_back/apis/v1/views.py#L79-L106)
-*
+* Body 를 통해 밭은 shop 값에 해당하는 쇼핑몰 크롤러를 불러오기.
+* login_id, login_pw 값을 크롤러 모듈에 있는 `is_valid_account()` 함수를 이용하여 유효한 계정인지 확인.
+* 해당 계정이 유효하다면 쇼핑몰 계정 DB 에 해당 계정이 존재하는지 확인.
+* 유효한 계정이며 중복된 계정이 아닌게 확인되면 DB 에 쇼핑몰 계정 등록.
 
 `NotceView` [Code](https://github.com/KangJuSeong/sellerShop_server/blob/0cc691ae359f7f96e16b0b3d9db29c3d49044ba3/shoppingmall_back/apis/v1/views.py#L109-L122)
 * DB 에 등록되어 있는 모든 공지 사항을 불러오고 Response 에 담아서 보내주기.
